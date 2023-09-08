@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Posts;
+use App\Models\ImagePosts;
 use Illuminate\Http\Request;
 
 
@@ -22,7 +23,13 @@ class PostsController extends Controller
             return response()->json(['Message' => 'Postingan Tidak Ditemukan']);
         }
 
-        return response()->json(['data'=> $post], 200);
+        $images = ImagePosts::where('post_id', $post->id)->get();
+
+        return response()->json([
+            'data' => [
+                'post' => $post,
+                'images' => $images
+            ]] ,200);
     }
 
 
@@ -35,6 +42,8 @@ class PostsController extends Controller
         }
         $request->validate([
             'caption' => 'required | max : 255',
+            'images' => 'required | array ',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif |max:2048'
         ]);
 
         $user = auth()->user();
@@ -46,9 +55,19 @@ class PostsController extends Controller
 
         $post->save();
         //return hasil save 
-        return response()->json([
-            "Message" => 'Post berhasil di buat'
-        ]);
+        foreach ($request->file('images') as $image) {
+            $imageName = time() . '-' . $image->getClientOriginalName();
+            $image->storeAs('image_posts', $imageName, 'public');
+
+            $imagePost = new ImagePosts([
+                'post_id' => $post->id,
+                'image_path' => $imageName
+            ]);
+
+            $imagePost->save();
+        }
+
+        return response()->json(["Message" => 'Postingan berhasil dibuat'], 201);
     }
 
     //Method Update Post
@@ -57,13 +76,35 @@ class PostsController extends Controller
     {
         $post = Posts::find($id);
 
-        if(!$post){
-            return response()->json(["Message" => "Postingan tidak ditemukan"]);
+        if (!$post) {
+            return response()->json(["Message" => "Postingan tidak ditemukan"], 404);
         }
+
+        $request->validate([
+            'caption' => 'required|max:255',
+            'images' => 'array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048' // Batasan tipe dan ukuran gambar
+        ]);
+
         $post->caption = $request->input('caption');
         $post->save();
 
-        return response()->json(["message"=>"Update Postingan berhasil!"], 200);
+        // Upload dan simpan gambar-gambar baru (jika ada)
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $imageName = time() . '-' . $image->getClientOriginalName();
+                $image->storeAs('image_posts', $imageName, 'public');
+
+                $imagePost = new ImagePosts([
+                    'post_id' => $post->id,
+                    'image_path' => $imageName
+                ]);
+
+                $imagePost->save();
+            }
+        }
+
+        return response()->json(["message" => "Update Postingan berhasil!"], 200);
     }
 
     //Method delete Post
@@ -72,11 +113,16 @@ class PostsController extends Controller
     {
         $post = Posts::find($id);
 
-        if(!$post) {
-            return response()->json(["Message"=>"Postingan Tidak Ditemukan"]);
+        if (!$post) {
+            return response()->json(["Message" => "Postingan Tidak Ditemukan"], 404);
         }
+
+        // Hapus semua gambar terkait
+        ImagePosts::where('post_id', $post->id)->delete();
+
         $post->delete();
 
-        return response()->json(["Message" => 'Postingan Berhasil dihapus']);
+        return response()->json(["Message" => 'Postingan Berhasil dihapus'], 200);
+
     }
 }

@@ -13,19 +13,18 @@ class CreateTableImagesPosts extends Migration
      */
     public function up()
     {
-        Schema::create('table_images_posts', function (Blueprint $table) {
+        Schema::create('image_posts', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('post_id');
+            $table->string('image_path');
             $table->timestamps();
+            
+            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
-        Schema::dropIfExists('table_images_posts');
+        Schema::dropIfExists('image_posts');
     }
 }
