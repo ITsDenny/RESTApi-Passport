@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-
+use App\Http\Controllers\PostsController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -15,10 +15,30 @@ use App\Http\Controllers\AuthController;
 |
 */
 
-
+//Route untuk login dan register user
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
-Route::middleware('auth:api')->post('logout', [AuthController::class, 'logout']);
+Route::middleware('auth:api')->post('logout', [AuthController::class, 'logout']);   
+
+/**
+ * Route Post dari atas kebawah
+ * Get all post
+ * Get Post by id
+ * New Post
+ * Update Post
+ * Delete Post
+ */
+Route::middleware('auth:api')->get('/posts', [PostsController::class, 'index']);
+Route::middleware('auth:api')->get('/posts/{id}', [PostsController::class, 'show']);
+Route::middleware('auth:api')->group(function () {
+Route::post('/posts', [PostsController::class, 'store']);
+});
+Route::middleware('auth:api')->put('/posts/{id}', [PostsController::class, 'update']);
+Route::middleware('auth:api')->delete('/posts/{id}', [PostsController::class, 'destroy']);
+
+
+
+
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

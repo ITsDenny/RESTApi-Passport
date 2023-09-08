@@ -7,9 +7,38 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Passport\Passport;
 
 class AuthController extends Controller
 {
+    public function login(Request $request)
+    {
+        $request -> validate([
+            'username' => 'required',            
+            'password' => 'required'            
+        ]);
+
+        if(Auth::attempt(['username' => $request->input('username'), 'password' => $request->input('password')])){
+            $token = auth()->user()->createToken('authToken')->accessToken;
+            return response()->json([
+                'token' => $token
+            ], 200);
+            
+        }else{
+            return response()->json([
+                'Message' => 'Invalid!'
+            ], 401);
+            
+        }
+    }
+    public function logout(Request $request)
+    {
+        $request->user()->token()->revoke();
+        //Kembalikan Message json ketika berhasil logout
+        return response()->json([
+            'Message' => 'Logout successfully!'
+        ], 200);
+    }
     public function register(Request $request)
     {
         $request->validate([
@@ -38,36 +67,10 @@ class AuthController extends Controller
 
     }
 
-    public function login(Request $request)
-    {
-        $request -> validate([
-            'username' => 'required',            
-            'password' => 'required'            
-        ]);
+   
 
-        if(Auth::attempt(['username' => $request->input('username'), 'password' => $request->input('password')])){
-            $token = auth()->user()->createToken('authToken')->accessToken;
-            return response()->json([
-                'token' => $token
-            ], 200);
-            
-        }else{
-            return response()->json([
-                'Message' => 'Invalid!'
-            ], 401);
-            
-        }
-    }
-
-    public function logout(Request $request)
-    {
-        $request->user()->token()->revoke();
-        //Kembalikan Message json ketika berhasil logout
-        return response()->json([
-            'Message' => 'Logout successfully!'
-        ], 200);
-    }
-
+    
+    /*
     public function showRegistrationForm()
     {
         return view('auth.register');
@@ -78,4 +81,5 @@ class AuthController extends Controller
     {
         return view('auth.login');
     }
+    */
 }

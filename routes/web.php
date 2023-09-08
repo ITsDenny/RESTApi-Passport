@@ -17,11 +17,10 @@ use App\Http\Controllers\AuthController;
 Route::get('/', function () {
     return view('welcome');
 });
-//Route untuk nampilkan form register dan login
+//Route untuk nampilkan dan kirim data form register dan login
+//Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
+//Route::post('/register', [AuthController::class, 'register']);
+//Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+//Route::post('/login', [AuthController::class, 'login']);
 
-
-Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
-
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+//Route ke dashboard

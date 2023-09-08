@@ -45,6 +45,7 @@ return [
             'driver' => 'passport',
             'provider' => 'users',
             'hash' => false,
+            'expire_in' => 60, //menit , waktu kadaluarsa
         ],
     ],
 
