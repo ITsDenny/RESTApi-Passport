@@ -11,9 +11,12 @@
         "php": "^7.3",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^2.0",
-        "guzzlehttp/guzzle": "^7.0.1",
+        "guzzlehttp/guzzle": "6.0",
+        "guzzlehttp/psr7": "1.0",
         "laravel/framework": "^8.0",
-        "laravel/tinker": "^2.0"
+        "laravel/passport": "10.0",
+        "laravel/tinker": "^2.0",
+        "lcobucci/jwt": "3.3.3"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",
