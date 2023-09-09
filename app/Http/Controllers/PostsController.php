@@ -17,7 +17,9 @@ class PostsController extends Controller
 
         $post = Posts::where('user_id', $user->id)->with('images')->get();
 
-
+        $post->each(function ($post) {
+            $post->like_count = $post->likes->count(); // Menghitung jumlah like pada setiap postingan
+        });
         return response()->json(['data' => $post], 200);
     }
     //Method liat post by id
@@ -95,23 +97,21 @@ class PostsController extends Controller
         $user = auth()->user();
 
         $post = Posts::where('user_id', $user->id)->find($id);
-
         if (!$post) {
             return response()->json(["Message" => "Postingan tidak ditemukan"], 404);
         }
 
         $request->validate([
             'caption' => 'required|max:255',
-            'images' => 'nullable|array',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4096',
         ]);
 
-        $post->caption = $request->input('caption');
-        $post->save();
-
+        if($request->has('caption')){
+            $post->caption = $request-> input('caption');
+        };
         // Upload dan simpan gambar-gambar baru (jika ada)
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
+        if ($request->hasFile('image')) {
+            foreach ($request->file('image') as $image) {
                 $imageName = time() . '-' . $image->getClientOriginalName();
                 $image->storeAs('image_posts', $imageName, 'public');
 
@@ -123,6 +123,8 @@ class PostsController extends Controller
                 $imagePost->save();
             }
         }
+
+        $post->save();
 
         return response()->json(["message" => "Update Postingan berhasil!"], 200);
     }
