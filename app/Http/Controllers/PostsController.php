@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Posts;
 use App\Models\ImagePosts;
+use App\Models\Like;
+use App\Models\Comments;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -15,10 +17,11 @@ class PostsController extends Controller
     {
         $user = auth()->user();
 
-        $post = Posts::where('user_id', $user->id)->with('images')->get();
+        $post = Posts::where('user_id', $user->id)->with(['images','likes','comments'])->get();
 
         $post->each(function ($post) {
-            $post->like_count = $post->likes->count(); // Menghitung jumlah like pada setiap postingan
+            $post->like_count = $post->likes->count();
+            $post->comment_count = $post->comments->count();
         });
         return response()->json(['data' => $post], 200);
     }

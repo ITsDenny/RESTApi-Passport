@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\LikeController;
@@ -26,7 +27,7 @@ Route::middleware('auth:api')->post('logout', [AuthController::class, 'logout'])
 
 
 Route::middleware('auth:api')->group(function() {
-    //Route Untuk Post
+    //Route Untuk Postingan
     Route::get('/view_post', [PostsController::class, 'index']);
     Route::post('/new_post', [PostsController::class, 'store']);
     Route::get('/view_post/{id}', [PostsController::class, 'show']);
@@ -35,15 +36,19 @@ Route::middleware('auth:api')->group(function() {
     //Route untuk Profile
     Route::get('/profile/{id}',[ProfileController::class,'show']);
     Route::post('/profile_image',[ProfileController::class,'updateProfileImage']);
+    //Route Search User
+    Route::get('/search_user',[ProfileController::class,'searchUser']);
     //Route Like
     Route::post('/post/{post}/like', [LikeController::class, 'like'])->name('posts.like');
     Route::delete('/post/{post}/unlike', [LikeController::class, 'unlike'])->name('posts.unlike');
+    //Route Comment
+    Route::post('/post/{post_id}/comment',[CommentController::class, 'store']);
     //Route Follow
     Route::post('/follow/{user_id}', [FollowController::class,'followUser']);
     Route::delete('/unfollow/{user_id}', [FollowController::class, 'unfollowUser']);
 });
 
-
+Route::get('/posts/{post_id}/comments', [CommentController::class, 'show']);
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

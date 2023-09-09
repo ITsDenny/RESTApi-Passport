@@ -25,6 +25,7 @@ class User extends Authenticatable
         'lastName',
         'DateOfBirth',
         'image',
+        'phone_number'
     ];
 
     public function posts()

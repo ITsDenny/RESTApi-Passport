@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+
 
 class Follow extends Model
 {
@@ -25,6 +27,7 @@ class Follow extends Model
     {
         return $this->belongsTo(User::class, 'following_id');
     }
+
     public function isFollowing($userToFollow)
     {
         return $this->following()->where('following_id', $userToFollow->id)->exists();

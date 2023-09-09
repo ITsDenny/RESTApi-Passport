@@ -46,7 +46,8 @@ class AuthController extends Controller
             'password' => 'required | min : 6',
             'firstName' => 'required | string |max:50 ',
             'lastName' => 'required | string |max:50 ',
-            'DateOfBirth' => 'required | date'
+            'DateOfBirth' => 'required | date',
+            'phone_number' => 'required | string | max:15'
         ]);
 
         //Method user baru
@@ -56,7 +57,8 @@ class AuthController extends Controller
             'password' => Hash::make($request->input('password')),
             'firstName' => $request->input('firstName'),
             'lastName' => $request->input('lastName'),
-            'DateOfBirth' => $request->input('DateOfBirth')
+            'DateOfBirth' => $request->input('DateOfBirth'),
+            'phone_number' => $request->input('phone_number')
         ]);
 
         $user -> save();
