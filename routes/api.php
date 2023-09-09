@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FollowController;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\LikeController;
 
@@ -38,6 +39,8 @@ Route::middleware('auth:api')->group(function() {
     Route::delete('/delete_post/{id}', [PostsController::class, 'destroy']);
     Route::post('/post/{post}/like', [LikeController::class, 'like'])->name('posts.like');
     Route::delete('/post/{post}/unlike', [LikeController::class, 'unlike'])->name('posts.unlike');
+    Route::post('/follow/{user_id}', [FollowController::class,'followUser']);
+    Route::delete('/unfollow/{user_id}', [FollowController::class, 'unfollowUser']);
 });
 
 /*
