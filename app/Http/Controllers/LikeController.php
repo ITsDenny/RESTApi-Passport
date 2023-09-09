@@ -19,7 +19,7 @@ class LikeController extends Controller
             $post->increment('like_count');
         }
 
-        return response()->json(['message' => 'Post liked successfully']);
+        return response()->json(['message' => 'Post liked successfully'],200);
     }
     public function unlike(Posts $post)
     {
