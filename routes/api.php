@@ -28,12 +28,12 @@ Route::middleware('auth:api')->post('logout', [AuthController::class, 'logout'])
  * Update Post
  * Delete Post
  */
-Route::middleware('auth:api')->group(function () {
-    Route::get('/posts', [PostsController::class, 'index']);
-    Route::post('/posts', [PostsController::class, 'store']);
-    Route::get('/posts/{id}', [PostsController::class, 'show']);
-    Route::put('/posts/{id}', [PostsController::class, 'update']);
-    Route::delete('/posts/{id}', [PostsController::class, 'destroy']);
+Route::middleware('auth:api')->group(function() {
+    Route::get('/view_post', [PostsController::class, 'index']);
+    Route::post('/new_post', [PostsController::class, 'store']);
+    Route::get('/view_post/{id}', [PostsController::class, 'show']);
+    Route::put('/update_post/{id}', [PostsController::class, 'update']);
+    Route::delete('/delete_post/{id}', [PostsController::class, 'destroy']);
 });
 
 

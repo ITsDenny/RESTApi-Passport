@@ -20,4 +20,9 @@ class Posts extends Model
         return $this->belongsTo(User::class);
 
     }
+
+    public function images()
+    {
+        return $this->hasMany(ImagePosts::class, 'post_id');
+    }
 }
